@@ -29,11 +29,11 @@ cutoff = 4
 paired_reads = T
 
 # Read 1 pattern. For paired reads, what string pattern in the filename identifies read 1?
-R1_pattern = "_F_"
+R1_pattern = "_R1_"
 
 # Read 2 pattern. For paired reads, what string pattern in the filename identifies read 2?
 # Assumes the rest of the filename matches read 1.
-R2_pattern = "_R_"
+R2_pattern = "_R2_"
 
 # Define Functions ----------------------------
 
@@ -163,6 +163,9 @@ seq_files <- seq_files[grepl("\\.fastq|\\.fq", seq_files)]
 
 # identify read 1 files
 R1_files <- seq_files[grepl(R1_pattern, seq_files)]
+
+if(length(R1_files) != length(seq_files)/ 2) warning("Unequal number of R1 and R2 seqs!")
+if(length(R1_files) == 0) stop("ERROR: No R1 Seqs! Check pattern and working directory!")
 
 # Get complexity scores for all files -----------
 checked_files <- lapply(seq_files,
