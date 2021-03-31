@@ -9,6 +9,8 @@ library(dada2)
 
 # Script parameters ----------------
 
+setwd("/home/sean/Documents/trouble/LearnErrors_troubleshoot/test/RF")
+
 # Directory where seq files are located. Should contain all reads (R1 and R2 if paired). 
 # Default = current directory.
 seq_files_directory = "./"
@@ -24,11 +26,11 @@ cutoff = 4
 paired_reads = T
 
 # Read 1 pattern. For paired reads, what string pattern in the filename identifies read 1?
-R1_pattern = "_R1_"
+R1_pattern = "_F_"
 
 # Read 2 pattern. For paired reads, what string pattern in the filename identifies read 2?
 # Assumes the rest of the filename matches read 1.
-R2_pattern = "_R2_"
+R2_pattern = "_R_"
 
 # Define Functions ----------------------------
 
@@ -108,13 +110,7 @@ filter_low_comp <- function(R1,
 
   }
   
-  # Create output directory for filtered files
-  if(!exists(outdir)){
-    dir.create(outdir)
-  }else{
-    warning("Output directory already exists! Remove it before trying again.")
-    stop()
-  }
+
   
   ## Filter Read 1
   filtered_R1 <- raw_R1[cmps > cutoff]
@@ -169,6 +165,16 @@ R1_files <- seq_files[grepl(R1_pattern, seq_files)]
 checked_files <- lapply(seq_files,
                          FUN = detect_low_comp)
 names(checked_files) <- seq_files
+
+
+# Create output directory for filtered files
+if(!exists(outdir)){
+  dir.create(outdir)
+}else{
+  warning("Output directory already exists! Remove it before trying again.")
+  stop()
+}
+
 
 # Remove low complexity reads from read 1 and, optionally, read 2 -------------
 summary_list <- lapply(R1_files,
