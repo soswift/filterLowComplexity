@@ -9,7 +9,10 @@ library(dada2)
 
 # Script parameters ----------------
 
-setwd("/home/sean/Documents/trouble/LearnErrors_troubleshoot/test/RF")
+setwd("/home/sean/Documents/trouble/LearnErrors_troubleshoot/test/")
+
+tm <- proc.time()
+
 
 # Directory where seq files are located. Should contain all reads (R1 and R2 if paired). 
 # Default = current directory.
@@ -168,8 +171,8 @@ names(checked_files) <- seq_files
 
 
 # Create output directory for filtered files
-if(!exists(outdir)){
-  dir.create(outdir)
+if(!exists(output_directory)){
+  dir.create(output_directory)
 }else{
   warning("Output directory already exists! Remove it before trying again.")
   stop()
@@ -185,3 +188,4 @@ summary_report <- do.call("rbind", summary_list)
 
 write.csv(summary_report, "filter_low_comp_report.csv", row.names = F)
 
+proc.time() - tm
