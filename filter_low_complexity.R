@@ -2,17 +2,14 @@
 # It's intended for Illumina amplicon data that contains reads with repeats.
 # These reads may have high quality, but the actual base pairs are repeats (e.g. all Gs)
 # Low complexity seqs can disrupt dada2 at the learnErrors step.
-
 library(ShortRead)
 library(dada2)
 
-
 # Script parameters ----------------
-
+# S
 setwd("/home/sean/Documents/trouble/LearnErrors_troubleshoot/test/")
 
 tm <- proc.time()
-
 
 # Directory where seq files are located. Should contain all reads (R1 and R2 if paired). 
 # Default = current directory.
@@ -77,16 +74,13 @@ filter_low_comp <- function(R1,
   ## Read 1
   # read in the read 1 sequencing file
   raw_R1 <- readFastq(R1)
-  
   # get read 1 complexity scores
   cmps <- cmp_scores[[R1]]
-  
   # generate summary report
   df_out <-  data.frame(Read1 = R1,
                         Total_seqs = length(cmps),
                         Read1_low_comp_seqs = length(cmps[cmps < cutoff]),
                         R1_perc_low_comp = length(cmps[cmps < cutoff]) / length(cmps))
-
   ## Read 2
   R2 = NULL
   # get complexity scores from paired read, if applicable
@@ -112,9 +106,6 @@ filter_low_comp <- function(R1,
     df_out$Read2_perc_low_comp = length(R2_cmps[R2_cmps < cutoff]) / length(R2_cmps)
 
   }
-  
-
-  
   ## Filter Read 1
   filtered_R1 <- raw_R1[cmps > cutoff]
   
@@ -172,7 +163,8 @@ checked_files <- lapply(seq_files,
                          FUN = detect_low_comp)
 names(checked_files) <- seq_files
 
-
+# write out in case next step fails
+saveRDS(checked_files, "checked_files.RDS")
 # Create output directory for filtered files
 if(!exists(output_directory)){
   dir.create(output_directory)
@@ -183,6 +175,9 @@ if(!exists(output_directory)){
 
 
 # Remove low complexity reads from read 1 and, optionally, read 2 -------------
+# Call function filter_low_comp() which performs filtering and writes out file to output directory
+# The function runs on each read or read pair in the directory.
+
 summary_list <- lapply(R1_files,
                          FUN = filter_low_comp,
                          paired = paired_reads)
